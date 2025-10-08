@@ -19,9 +19,23 @@
     environment: 'prod',
     deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17'
   });
+
+  // Configura atributos personalizados del cliente (incluyendo nombre)
+  Genesys('command', 'Messenger.open', {
+    data: {
+      customer: {
+        firstName: 'Franco',
+        lastName: 'Alarcon',
+        email: 'franco.alarcon@sercomed.cl'
+        // otros parámetros si los necesitas
+      }
+    }
+  });
+   
 </script>
-  zz
+a1
 </body>
 </html>
+
 
 
