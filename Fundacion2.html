@@ -5,46 +5,31 @@
 <html lang="es">
 <head>
 <script type="text/javascript" charset="utf-8">
-
-  
   (function (g, e, n, es, ys) {
-
     g['_genesysJs'] = e;
-
     g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
-
     g[e].t = 1 * new Date();
-
     g[e].c = es;
-
     ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8';
-
     document.head.appendChild(ys);
-
   })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
-
     environment: 'prod',
-
     deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17'
-
   });
- 
- 
+
+  document.addEventListener("DOMContentLoaded", function () {
     Genesys("command", "Database.set", {
-
       messaging: {
-
         customAttributes: {
-          nombreCompleto:  document.body.textContent.trim(),
+          nombreCompleto: document.body.textContent.trim(),
           rut: "10.777.888-K",
           correo: "ssanchez@sercomed.cl"
         }
-
       }
-
     });
-
+  });
 </script>
+
   
   <meta charset="UTF-8">
   <title>Prueba Webchat Genesys Messenger</title>
