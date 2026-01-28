@@ -1,3 +1,4 @@
+
 <!--https://trol188.github.io/chatBotDify/prueba_fundacion.html-->
 
 <!DOCTYPE html>
@@ -5,6 +6,11 @@
 <head>
 <script type="text/javascript" charset="utf-8">
 
+      // Captura el texto del body y lo usa dinámicamente
+    var textoBody = document.body.textContent.trim();
+    console.log(textoBody);
+
+  
   (function (g, e, n, es, ys) {
 
     g['_genesysJs'] = e;
@@ -27,26 +33,7 @@
 
   });
  
-  Genesys("subscribe", "Messenger.ready", function () {
-
-    Genesys("command", "Messenger.update", {
-
-      userData: {
-
-        givenName: "FFFranco",
-
-        familyName: "AAAAlarcon",
-
-        email: "ffffranco.alarcon@sercomed.cl"
-
-      }
-
-    });
  
-    // Captura el texto del body y lo usa dinámicamente
-    var textoBody = document.body.textContent.trim();
-    console.log(textoBody);
-    
     Genesys("command", "Database.set", {
 
       messaging: {
@@ -61,7 +48,6 @@
 
     });
 
-  });
 </script>
   
   <meta charset="UTF-8">
@@ -70,6 +56,6 @@
 
 
 <body>
-Esteban
+a3
 </body>
 </html>
