@@ -6,10 +6,6 @@
 <head>
 <script type="text/javascript" charset="utf-8">
 
-      // Captura el texto del body y lo usa dinámicamente
-    var textoBody = document.body.textContent.trim();
-    console.log(textoBody);
-
   
   (function (g, e, n, es, ys) {
 
@@ -39,7 +35,7 @@
       messaging: {
 
         customAttributes: {
-          nombreCompleto: textoBody,
+          nombreCompleto:  document.body.textContent.trim(),
           rut: "10.777.888-K",
           correo: "ssanchez@sercomed.cl"
         }
