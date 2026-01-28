@@ -4,6 +4,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <style>
+    /* Tema global oscuro */
+    body { background: #f4f4f4; font-family: 'Segoe UI', sans-serif; }
+    
+    /* Launcher custom (sobrescribe Genesys) */
+    .gwc-launcher { 
+      bottom: 30px !important; right: 30px !important; 
+      background: linear-gradient(135deg, #007BFF, #0056b3) !important;
+      border-radius: 50px !important; width: 70px !important; height: 70px !important;
+      box-shadow: 0 4px 20px rgba(0,123,255,0.3) !important;
+    }
+    
+    /* Header chat: tu logo y color */
+    .gwc-chat-header { 
+      background: #007BFF !important; color: white !important;
+      font-size: 16px; padding: 15px; border-radius: 10px 10px 0 0;
+    }
+    
+    /* Mensajes usuario (derecha, azul) */
+    .gwc-chat-message-container.gwc-chat-message-container-outbound {
+      background: #007BFF !important; color: white !important; border-radius: 20px 20px 5px 20px;
+      margin-left: 40%; font-family: Arial;
+    }
+    
+    /* Mensajes bot/agente (izquierda, gris) */
+    .gwc-chat-message-container.gwc-chat-message-container-inbound {
+      background: #e9ecef !important; color: #333 !important; border-radius: 20px 20px 20px 5px;
+      margin-right: 40%; font-family: 'Georgia', serif;
+    }
+    
+    /* Input mensajes */
+    .gwc-chat-message-form textarea { border: 2px solid #007BFF !important; border-radius: 25px; padding: 12px; }
+    
+    /* Botón enviar */
+    .gwc-chat-message-form button { background: #007BFF !important; border-radius: 50%; }
+  </style>
+  
 <script type="text/javascript" charset="utf-8">
 
   (function (g, e, n, es, ys) {
