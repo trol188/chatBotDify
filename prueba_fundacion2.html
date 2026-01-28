@@ -1,9 +1,8 @@
-
-<!--https://trol188.github.io/chatBotDify/prueba_fundacion.html-->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <title>Webchat Genesys Personalizado</title>
   <style>
     /* Tema global oscuro */
     body { background: #f4f4f4; font-family: 'Segoe UI', sans-serif; }
@@ -40,9 +39,8 @@
     /* Botón enviar */
     .gwc-chat-message-form button { background: #007BFF !important; border-radius: 50%; }
   </style>
-  
-<script type="text/javascript" charset="utf-8">
 
+  <script type="text/javascript" charset="utf-8">
     (function (g, e, n, es, ys) {
       g['_genesysJs'] = e; g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
       g[e].t = 1 * new Date(); g[e].c = es;
@@ -52,36 +50,16 @@
       environment: 'prod', deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17',
       theme: 'dark'  // Tema base (light/dark)
     });
- 
- 
-    Genesys("command", "Database.set", {
 
-      messaging: {
-
-        customAttributes: {
-          nombreCompleto: "Sebastian Sanchez",
-          rut: "10.777.888-K",
-          correo: "ssanchez@sercomed.cl"
-        }
-
-      }
-
+    Genesys("subscribe", "Database.ready", function () {
+      Genesys("command", "Database.set", {
+        messaging: { customAttributes: { nombreCompleto: "Antonio", rut: "10.777.888-K", correo: "ssanchez@sercomed.cl" } }
+      });
     });
-
-</script>
-  
-  <meta charset="UTF-8">
-  <title>Prueba Webchat Genesys Messenger</title>
+  </script>
 </head>
-
-
 <body>
-a5
+  <h1>Tu página con Webchat personalizado</h1>
+  <p>¡Haz clic en el launcher azul abajo-derecha para abrir!</p>
 </body>
 </html>
-
-
-
-
-
-
