@@ -5,259 +5,164 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Genesys Web Messenger – Launcher Custom</title>
  
-  <style>
-    /* ====== CONTENIDO DEMO (puedes borrar esto en tu sitio) ====== */
-    body { font-family: system-ui, Arial, sans-serif; margin: 0; min-height: 100vh; background:#fff; }
-    .demo { padding: 24px; color:#111827; }
- 
-    /* ====== WIDGET ====== */
-.gc-widget{
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  z-index: 999999;
-  display: flex;
-  flex-direction: column;     /* 👈 CLAVE */
-  align-items: flex-end;      /* alinea burbuja con el botón */
-  gap: 10px;                  /* espacio vertical */
-}
- 
-    /* ====== BURBUJA similar a referencia ====== */
-    .gc-bubble{
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 12px;
- 
-      padding: 14px 18px 14px 14px;
-      border-radius: 999px;              /* bien redonda */
-      background: #8f847c;               /* tostado/gris */
-      color: #fff;
- 
-      box-shadow: 0 10px 22px rgba(0,0,0,.18);
-      max-width: 360px;
-    }
- 
-    /* cola */
-    .gc-bubble::after{
-      content:"";
-      position:absolute;
-      right: 34px;
-      bottom: -10px;
- 
-      width: 0; height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-top: 12px solid #8f847c;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
-    }
- 
-    /* avatar con borde blanco como referencia */
-    .gc-avatar{
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex: 0 0 auto;
-      background: #fff;
-      box-shadow: 0 0 0 6px rgba(255,255,255,.35);
-      display: grid;
-      place-items: center;
-    }
-    .gc-avatar img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
- 
-    .gc-bubble__text{ line-height: 1.05; }
-    .gc-bubble__title{
-      font-weight: 800;
-      font-size: 18px;
-      margin-bottom: 4px;
-      letter-spacing: .2px;
-    }
-    .gc-bubble__subtitle{
-      font-weight: 600;
-      font-size: 14px;
-      opacity: .95;
-    }
- 
-    /* X arriba a la derecha */
-    .gc-bubble__close{
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 0;
-      cursor: pointer;
-      background: #2f2f2f;
-      color: #fff;
-      box-shadow: 0 10px 18px rgba(0,0,0,.22);
-      display: grid;
-      place-items: center;
-      font-size: 16px;
-      line-height: 1;
-    }
-    .gc-bubble__close:active{ transform: translateY(1px); }
- 
-    /* ====== BOTÓN NARANJA similar a referencia ====== */
-    .gc-fab{
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      border: 0;
-      cursor: pointer;
-      background: #ff6a00;
-      box-shadow: 0 16px 36px rgba(0,0,0,.24);
-      display: grid;
-      place-items: center;
-      position: relative;
-      transition: transform .12s ease, opacity .12s ease;
-    }
-    .gc-fab:hover{ transform: translateY(-1px); }
-    .gc-fab:active{ transform: translateY(0px); opacity: .92; }
-    .gc-fab[disabled]{ opacity: .6; cursor: not-allowed; transform:none; }
- 
-    /* puntito blanco en esquina (como “brillo”) */
-    .gc-fab::after{
-      content:"";
-      position:absolute;
-      right: 12px;
-      top: 12px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.9);
-      box-shadow: 0 0 0 8px rgba(255,255,255,.18);
-    }
- 
-    .gc-fab svg{ width: 36px; height: 36px; }
- 
-    .is-hidden{ display:none !important; }
- 
-    /* mobile: esconder burbuja para no tapar */
-    @media (max-width: 520px){
-      .gc-bubble{ display:none; }
-      .gc-widget{ right: 16px; bottom: 16px; }
-    }
- 
-    /* ✅ Ocultar SOLO el launcher nativo de Genesys (no tocar chat UI) */
-    .genesys-launcher,
-    .cx-launcher,
-    [class*="launcher"]{
-      display:none !important;
-      visibility:hidden !important;
-      opacity:0 !important;
-      pointer-events:none !important;
-    }
-</style>
- 
-  <!-- ====== SNIPPET GENESYS (TU DEPLOYMENT) ====== -->
-<script type="text/javascript" charset="utf-8">
-    (function (g, e, n, es, ys) {
-      g['_genesysJs'] = e;
-      g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments) };
-      g[e].t = 1 * new Date();
-      g[e].c = es;
-      ys = document.createElement('script');
-      ys.async = 1;
-      ys.src = n;
-      ys.charset = 'utf-8';
-      document.head.appendChild(ys);
-    })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
-      environment: 'prod',
-      deploymentId: '6a495972-d918-438f-a630-8dd1bb9fa6a3'
-    });
-</script>
- 
-  <!-- ====== LÓGICA (toggle abrir/cerrar) ====== -->
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const fab = document.getElementById("gcFab");
-      const bubble = document.getElementById("gcBubble");
-      const bubbleClose = document.getElementById("gcBubbleClose");
+(function () {
+
+  // ================= CONFIG DESDE ATRIBUTOS =================
+
+  const scriptTag = document.currentScript;
  
-      let messengerIsOpen = false;
+  const DEPLOYMENT_ID = scriptTag.dataset.deploymentId;
+
+  const ENVIRONMENT   = scriptTag.dataset.environment || "prod";
+
+  const AVATAR_URL    = scriptTag.dataset.avatarUrl || "";
  
-      function safeGenesys(cmd){
-        if (typeof window.Genesys === "function") window.Genesys("command", cmd);
-      }
+  if (!DEPLOYMENT_ID) {
+
+    console.error("[Genesys Widget] deploymentId requerido");
+
+    return;
+
+  }
  
-      // Cerrar solo burbuja
-      bubbleClose?.addEventListener("click", () => bubble.classList.add("is-hidden"));
+  // ================== CSS ==================
+
+  const style = document.createElement("style");
+
+  style.innerHTML = `
+
+    .gc-widget{position:fixed;right:22px;bottom:22px;z-index:999999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font-family:system-ui,Arial}
+
+    .gc-bubble{position:relative;display:flex;align-items:center;gap:12px;padding:14px 18px 14px 14px;border-radius:999px;background:#8f847c;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.18);max-width:360px}
+
+    .gc-bubble::after{content:"";position:absolute;right:22px;bottom:-10px;border-left:12px solid transparent;border-right:12px solid transparent;border-top:12px solid #8f847c}
+
+    .gc-avatar{width:54px;height:54px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.35)}
+
+    .gc-avatar img{width:100%;height:100%;object-fit:cover}
+
+    .gc-title{font-weight:800;font-size:18px}
+
+    .gc-sub{font-weight:600;font-size:14px;opacity:.95}
+
+    .gc-close{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#2f2f2f;color:#fff;cursor:pointer}
+
+    .gc-fab{width:72px;height:72px;border-radius:50%;border:0;background:#ff6a00;cursor:pointer;box-shadow:0 16px 36px rgba(0,0,0,.24);display:grid;place-items:center}
+
+    .gc-fab svg{width:36px;height:36px}
+
+    .gc-hidden{display:none!important}
+
+    .genesys-launcher,.cx-launcher,[class*="launcher"]{display:none!important}
+
+  `;
+
+  document.head.appendChild(style);
  
-      // Toggle abrir/cerrar chat desde el botón custom
-      fab?.addEventListener("click", () => {
-        if (!messengerIsOpen) {
-          safeGenesys("Messenger.open");
-          bubble.classList.add("is-hidden");
-        } else {
-          safeGenesys("Messenger.close");
-        }
-      });
+  // ================== HTML ==================
+
+  const wrapper = document.createElement("div");
+
+  wrapper.innerHTML = `
+<div class="gc-widget">
+<div class="gc-bubble" id="gcBubble">
+<button class="gc-close" id="gcBubbleClose">×</button>
+<div class="gc-avatar">
+
+          ${AVATAR_URL ? `<img src="${AVATAR_URL}">` : ""}
+</div>
+<div>
+<div class="gc-title">¿Necesita ayuda?</div>
+<div class="gc-sub">Nuestros ejecutivos están listos para ayudar</div>
+</div>
+</div>
+<button class="gc-fab" id="gcFab">
+<svg viewBox="0 0 24 24" fill="white">
+<path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z"/>
+</svg>
+</button>
+</div>
+
+  `;
+
+  document.body.appendChild(wrapper);
  
-      // Esperar Genesys y eventos para estado real
-      (function waitForGenesys(){
-        if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
+  const fab = document.getElementById("gcFab");
+
+  const bubble = document.getElementById("gcBubble");
+
+  const bubbleClose = document.getElementById("gcBubbleClose");
  
-        window.Genesys("subscribe", "Messenger.ready", () => { fab.disabled = false; });
-        window.Genesys("subscribe", "Messenger.opened", () => { messengerIsOpen = true; });
-        window.Genesys("subscribe", "Messenger.closed", () => { messengerIsOpen = false; });
-      })();
+  let isOpen = false;
  
-      // Refuerzo: ocultar launcher nativo aunque aparezca tarde (sin tocar chat UI)
-      (function hideLauncherOnly(){
-        const SELECTORS = [".genesys-launcher", ".cx-launcher", "[class*='launcher']"];
-        function hide(root){
-          try{
-            SELECTORS.forEach(sel => root.querySelectorAll(sel).forEach(el => {
-              el.style.setProperty("display","none","important");
-              el.style.setProperty("visibility","hidden","important");
-              el.style.setProperty("opacity","0","important");
-              el.style.setProperty("pointer-events","none","important");
-            }));
-            root.querySelectorAll("*").forEach(el => { if (el.shadowRoot) hide(el.shadowRoot); });
-          } catch(_) {}
-        }
-        const obs = new MutationObserver(() => hide(document));
-        obs.observe(document.documentElement, { childList:true, subtree:true });
-        hide(document);
-      })();
-    });
+  bubbleClose.onclick = () => bubble.classList.add("gc-hidden");
+ 
+  fab.onclick = () => {
+
+    if (!window.Genesys) return;
+
+    if (!isOpen) {
+
+      window.Genesys("command", "Messenger.open");
+
+      bubble.classList.add("gc-hidden");
+
+    } else {
+
+      window.Genesys("command", "Messenger.close");
+
+    }
+
+  };
+ 
+  // ================== GENESYS ==================
+
+  (function (g, e, n, es, ys) {
+
+    g['_genesysJs'] = e;
+
+    g[e] = g[e] || function () {(g[e].q = g[e].q || []).push(arguments)};
+
+    g[e].t = 1 * new Date();
+
+    g[e].c = es;
+
+    ys = document.createElement('script');
+
+    ys.async = 1;
+
+    ys.src = n;
+
+    document.head.appendChild(ys);
+
+  })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+
+    environment: ENVIRONMENT,
+
+    deploymentId: DEPLOYMENT_ID
+
+  });
+ 
+  (function waitGenesys(){
+
+    if (!window.Genesys) return setTimeout(waitGenesys, 100);
+
+    window.Genesys("subscribe","Messenger.opened",()=>isOpen=true);
+
+    window.Genesys("subscribe","Messenger.closed",()=>isOpen=false);
+
+  })();
+
+})();
+
+ 
 </script>
 </head>
  
 <body>
 <div class="demo">Demo page (puedes borrar esto). Abajo a la derecha: widget custom.</div>
- 
-  <div class="gc-widget" aria-live="polite">
-<div id="gcBubble" class="gc-bubble">
-<button id="gcBubbleClose" class="gc-bubble__close" type="button" aria-label="Cerrar">×</button>
- 
-      <div class="gc-avatar" aria-hidden="true">
-<!-- Cambia la URL por tu imagen real -->
-<img src="https://img.icons8.com/external-outline-lafs/64/external-ic_support-menu-outline-lafs.png" alt="">
-</div>
- 
-      <div class="gc-bubble__text">
-<div class="gc-bubble__title">¿Necesita ayuda?</div>
-<div class="gc-bubble__subtitle">Nuestros ejecutivos siempre<br>están listos para ayudar</div>
-</div>
-</div>
- 
-    <button id="gcFab" class="gc-fab" type="button" disabled aria-label="Abrir/Cerrar chat">
-<!-- ícono chat -->
-<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-<path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z" fill="white" opacity="0.95"/>
-<circle cx="10" cy="10" r="1.2" fill="#ff6a00"/>
-<circle cx="13" cy="10" r="1.2" fill="#ff6a00"/>
-<circle cx="16" cy="10" r="1.2" fill="#ff6a00"/>
-</svg>
-</button>
+
 </div>
 </body>
 </html>
