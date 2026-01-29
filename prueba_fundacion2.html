@@ -12,7 +12,7 @@
 
   const scriptTag = document.currentScript;
  
-  const DEPLOYMENT_ID = scriptTag.dataset.deploymentId;
+  const DEPLOYMENT_ID = scriptTag.dataset.deploymentId || "6a495972-d918-438f-a630-8dd1bb9fa6a3";
 
   const ENVIRONMENT   = scriptTag.dataset.environment || "prod";
 
