@@ -311,74 +311,49 @@
     });
 </script>
  
-  <!-- Lógica UI + abrir Messenger -->
 <script>
-
-    const fab = document.getElementById("gcFab");
-
-    const bubble = document.getElementById("gcBubble");
-
-    const bubbleClose = document.getElementById("gcBubbleClose");
+  const fab = document.getElementById("gcFab");     // tu botón naranja
+  const bubble = document.getElementById("gcBubble"); // tu burbuja “¿Necesita ayuda?”
+  let messengerIsOpen = false;
  
-    // Cierra solo la burbuja (no el chat)
-
-    bubbleClose.addEventListener("click", () => {
-
-      bubble.classList.add("is-hidden");
-
+  function safeGenesys(cmd, payload){
+    if (typeof window.Genesys !== "function") return;
+    window.Genesys("command", cmd, payload);
+  }
+ 
+  // Click del botón: abre o cierra
+  fab.addEventListener("click", () => {
+    if (!messengerIsOpen) {
+      safeGenesys("Messenger.open");
+      bubble?.classList.add("is-hidden"); // opcional: ocultar burbuja al abrir
+    } else {
+      safeGenesys("Messenger.close");     // <- esto “minimiza/cierra” la UI
+      // opcional: volver a mostrar burbuja al cerrar
+      // bubble?.classList.remove("is-hidden");
+    }
+  });
+ 
+  // Mantener estado real con eventos del SDK
+  (function waitForGenesys(){
+    if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
+ 
+    window.Genesys("subscribe", "Messenger.opened", () => {
+      messengerIsOpen = true;
+      // opcional: cambiar ícono/texto del botón
+      // fab.classList.add("is-open");
     });
  
-    // Click en botón -> abre chat
-
-    fab.addEventListener("click", () => {
-
-      if (typeof window.Genesys !== "function") return;
-
-      window.Genesys("command", "Messenger.open");
-
-      // opcional: oculta burbuja al abrir
-
-      bubble.classList.add("is-hidden");
-
+    window.Genesys("subscribe", "Messenger.closed", () => {
+      messengerIsOpen = false;
+      // opcional: volver a mostrar burbuja
+      // bubble?.classList.remove("is-hidden");
     });
  
-    // Espera a Genesys y habilita el botón cuando esté listo
-
-    (function waitForGenesys() {
-
-      if (typeof window.Genesys !== "function") {
-
-        fab.disabled = true;
-
-        return setTimeout(waitForGenesys, 100);
-
-      }
- 
-      // Cuando Messenger está listo, habilita
-
-      window.Genesys("subscribe", "Messenger.ready", () => {
-
-        fab.disabled = false;
-
-      });
- 
-      // opcional: al cerrar el chat, podrías volver a mostrar burbuja
-
-      window.Genesys("subscribe", "Messenger.closed", () => {
-
-        // muestra de nuevo solo si el usuario no la cerró manualmente
-
-        // (si quieres que reaparezca siempre, borra esta condición)
-
-        // bubble.classList.remove("is-hidden");
-
-      });
- 
-      // Fallback
-
-      setTimeout(() => { fab.disabled = false; }, 6000);
-
-    })();
+    // Habilita el botón cuando el messenger está listo
+    window.Genesys("subscribe", "Messenger.ready", () => {
+      fab.disabled = false;
+    });
+  })();
 </script>
 
  
