@@ -3,49 +3,221 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Prueba - Genesys Web Messenger (Botón flotante custom)</title>
+<title>Prueba - Botón flotante tipo Genesys</title>
  
   <style>
+
     body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 24px; }
-    .card { max-width: 780px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
+
+    .card { max-width: 820px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
+
     .muted { color: #6b7280; }
  
-    /* Botón flotante custom */
-    .gc-fab {
+    /* ===== Contenedor flotante ===== */
+
+    .gc-widget {
+
       position: fixed;
-      right: 18px;
-      bottom: 18px;
+
+      right: 22px;
+
+      bottom: 22px;
+
       z-index: 999999;
+
+      display: flex;
+
+      align-items: flex-end;
+
+      gap: 14px;
+
+    }
  
-      display: inline-flex;
+    /* ===== Burbuja (speech bubble) ===== */
+
+    .gc-bubble {
+
+      position: relative;
+
+      display: flex;
+
       align-items: center;
-      gap: 10px;
+
+      gap: 12px;
  
-      border: 0;
-      border-radius: 999px;
-      padding: 14px 16px;
-      cursor: pointer;
- 
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-      background: #111827;
+      max-width: 360px;
+
+      padding: 14px 16px 14px 14px;
+
+      border-radius: 26px;
+
+      background: #9a8f87; /* gris/tostado similar al ejemplo */
+
       color: #fff;
  
-      font-size: 14px;
-      font-weight: 600;
-      transition: transform .12s ease, opacity .12s ease;
+      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+
     }
+ 
+    /* “colita” de la burbuja */
+
+    .gc-bubble::after{
+
+      content:"";
+
+      position:absolute;
+
+      right: 34px;
+
+      bottom: -10px;
+
+      width: 0; height: 0;
+
+      border-left: 12px solid transparent;
+
+      border-right: 12px solid transparent;
+
+      border-top: 12px solid #9a8f87;
+
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+
+    }
+ 
+    .gc-avatar {
+
+      width: 56px;
+
+      height: 56px;
+
+      border-radius: 50%;
+
+      background: #fff;
+
+      display: grid;
+
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      overflow: hidden;
+
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.6);
+
+    }
+ 
+    /* Avatar “placeholder” (puedes cambiarlo por una foto con <img>) */
+
+    .gc-avatar svg { width: 42px; height: 42px; opacity: .75; }
+ 
+    .gc-bubble__text { line-height: 1.1; }
+
+    .gc-bubble__title { font-weight: 800; font-size: 18px; margin-bottom: 4px; }
+
+    .gc-bubble__subtitle { font-weight: 600; font-size: 14px; opacity: .95; }
+ 
+    .gc-bubble__close {
+
+      position: absolute;
+
+      top: -10px;
+
+      right: -10px;
+ 
+      width: 28px;
+
+      height: 28px;
+
+      border: 0;
+
+      border-radius: 999px;
+
+      background: #3b3b3b;
+
+      color: #fff;
+
+      cursor: pointer;
+ 
+      display: grid;
+
+      place-items: center;
+
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+
+    }
+
+    .gc-bubble__close:active { transform: translateY(1px); }
+ 
+    /* ===== Botón circular (launcher custom) ===== */
+
+    .gc-fab {
+
+      width: 66px;
+
+      height: 66px;
+
+      border-radius: 50%;
+
+      border: 0;
+
+      cursor: pointer;
+ 
+      background: #ff6a00; /* naranja como el ejemplo */
+
+      box-shadow: 0 14px 34px rgba(0,0,0,.22);
+
+      display: grid;
+
+      place-items: center;
+
+      position: relative;
+
+      transition: transform .12s ease, opacity .12s ease;
+
+    }
+
     .gc-fab:hover { transform: translateY(-1px); }
+
     .gc-fab:active { transform: translateY(0px); opacity: .92; }
  
-    .gc-fab__dot {
+    .gc-fab[disabled] { cursor: not-allowed; opacity: .65; transform: none; }
+ 
+    .gc-fab svg { width: 34px; height: 34px; }
+ 
+    /* Pequeño “spark”/marca al lado del ícono (opcional) */
+
+    .gc-fab .gc-spark {
+
+      position: absolute;
+
+      right: 10px;
+
+      top: 10px;
+
       width: 10px;
+
       height: 10px;
+
       border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34,197,94,.25);
+
+      background: rgba(255,255,255,.9);
+
+      box-shadow: 0 0 0 6px rgba(255,255,255,.18);
+
     }
  
-    .gc-fab[disabled] { cursor: not-allowed; opacity: .65; transform: none; }
+    /* Si se cierra burbuja, se oculta */
+
+    .is-hidden { display: none !important; }
+ 
+    /* En pantallas pequeñas, mejor ocultar burbuja para no tapar */
+
+    @media (max-width: 520px){
+
+      .gc-bubble { display: none; }
+
+      .gc-widget { right: 16px; bottom: 16px; }
+
+    }
 </style>
 </head>
  
@@ -53,74 +225,147 @@
 <div class="card">
 <h1>Web de prueba</h1>
 <p class="muted">
-      Este ejemplo usa un botón flotante personalizado para abrir Genesys Cloud Web Messenger.
-      Si ves dos botones (el tuyo y el de Genesys), oculta el launcher nativo desde la configuración del Messenger.
+
+      Botón flotante custom + burbuja tipo “¿Necesita ayuda?”.
+
+      Recuerda ocultar el launcher nativo en la configuración del Messenger en Genesys.
 </p>
 </div>
  
-  <!-- Botón flotante custom -->
-<button id="gcFab" class="gc-fab" type="button" disabled>
-<span class="gc-fab__dot" aria-hidden="true"></span>
-<span id="gcFabLabel">Cargando chat…</span>
+  <!-- Widget flotante -->
+<div class="gc-widget" aria-live="polite">
+<!-- Burbuja -->
+<div id="gcBubble" class="gc-bubble">
+<button id="gcBubbleClose" class="gc-bubble__close" type="button" aria-label="Cerrar mensaje">
+
+        ✕
 </button>
  
-  <!-- ✅ TU SNIPPET (tal cual) -->
+      <div class="gc-avatar" aria-hidden="true">
+<!-- Placeholder avatar (cámbialo por <img src="..."> si quieres) -->
+<svg viewBox="0 0 24 24" fill="none">
+<path d="M12 12c2.76 0 5-2.46 5-5.5S14.76 1 12 1 7 3.46 7 6.5 9.24 12 12 12Z" fill="#9ca3af"/>
+<path d="M3 23c0-5 4-9 9-9s9 4 9 9" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+</svg>
+</div>
+ 
+      <div class="gc-bubble__text">
+<div class="gc-bubble__title">¿Necesita ayuda?</div>
+<div class="gc-bubble__subtitle">Nuestros ejecutivos siempre<br>están listos para ayudar</div>
+</div>
+</div>
+ 
+    <!-- Botón circular -->
+<button id="gcFab" class="gc-fab" type="button" disabled aria-label="Abrir chat">
+<span class="gc-spark" aria-hidden="true"></span>
+<!-- Ícono chat -->
+<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+<path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z" fill="white" opacity="0.95"/>
+<circle cx="10" cy="10" r="1.2" fill="#ff6a00"/>
+<circle cx="13" cy="10" r="1.2" fill="#ff6a00"/>
+<circle cx="16" cy="10" r="1.2" fill="#ff6a00"/>
+</svg>
+</button>
+</div>
+ 
+  <!-- ✅ TU SNIPPET (actualizado) -->
 <script type="text/javascript" charset="utf-8">
+
     (function (g, e, n, es, ys) {
+
       g['_genesysJs'] = e;
+
       g[e] = g[e] || function () {
+
         (g[e].q = g[e].q || []).push(arguments)
+
       };
+
       g[e].t = 1 * new Date();
+
       g[e].c = es;
+
       ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+
     })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+
       environment: 'prod',
-      deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17'
+
+      deploymentId: '6a495972-d918-438f-a630-8dd1bb9fa6a3'
+
     });
 </script>
  
-  <!-- Lógica para habilitar el botón cuando el Messenger esté listo y abrirlo -->
+  <!-- Lógica UI + abrir Messenger -->
 <script>
+
     const fab = document.getElementById("gcFab");
-    const label = document.getElementById("gcFabLabel");
+
+    const bubble = document.getElementById("gcBubble");
+
+    const bubbleClose = document.getElementById("gcBubbleClose");
  
-    function setFabState(enabled, text) {
-      fab.disabled = !enabled;
-      label.textContent = text;
-    }
- 
-    // Click -> abre el Messenger
-    fab.addEventListener("click", () => {
-      if (typeof window.Genesys !== "function") return;
-      window.Genesys("command", "Messenger.open");
+    // Cierra solo la burbuja (no el chat)
+
+    bubbleClose.addEventListener("click", () => {
+
+      bubble.classList.add("is-hidden");
+
     });
  
-    // Espera al SDK
-    (function initWhenGenesysLoads() {
+    // Click en botón -> abre chat
+
+    fab.addEventListener("click", () => {
+
+      if (typeof window.Genesys !== "function") return;
+
+      window.Genesys("command", "Messenger.open");
+
+      // opcional: oculta burbuja al abrir
+
+      bubble.classList.add("is-hidden");
+
+    });
+ 
+    // Espera a Genesys y habilita el botón cuando esté listo
+
+    (function waitForGenesys() {
+
       if (typeof window.Genesys !== "function") {
-        setFabState(false, "Cargando chat…");
-        return setTimeout(initWhenGenesysLoads, 100);
+
+        fab.disabled = true;
+
+        return setTimeout(waitForGenesys, 100);
+
       }
  
-      // Cuando el Messenger esté listo, habilita tu botón
+      // Cuando Messenger está listo, habilita
+
       window.Genesys("subscribe", "Messenger.ready", () => {
-        setFabState(true, "¿Necesitas ayuda? Chatea");
+
+        fab.disabled = false;
+
       });
  
-      // (Opcional) Si quieres cambiar texto cuando se abre/cierra
-      window.Genesys("subscribe", "Messenger.opened", () => {
-        setFabState(true, "Chat abierto");
-      });
+      // opcional: al cerrar el chat, podrías volver a mostrar burbuja
+
       window.Genesys("subscribe", "Messenger.closed", () => {
-        setFabState(true, "Abrir chat");
+
+        // muestra de nuevo solo si el usuario no la cerró manualmente
+
+        // (si quieres que reaparezca siempre, borra esta condición)
+
+        // bubble.classList.remove("is-hidden");
+
       });
  
-      // Fallback: por si el evento ready no dispara (bloqueos/cookies/etc.)
-      setTimeout(() => {
-        if (fab.disabled) setFabState(true, "Abrir chat");
-      }, 6000);
+      // Fallback
+
+      setTimeout(() => { fab.disabled = false; }, 6000);
+
     })();
 </script>
 </body>
 </html>
+
+ 
