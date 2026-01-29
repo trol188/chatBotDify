@@ -365,6 +365,23 @@
 
     })();
 </script>
+
+
+ <script>
+  (function waitForGenesys() {
+    if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
+ 
+    // Algunos tenants exponen eventos de error; si no existe, no pasa nada.
+    try {
+      window.Genesys("subscribe", "Messenger.error", (e) => {
+        console.error("Messenger.error:", e);
+      });
+    } catch (_) {}
+ 
+  })();
+</script>
+
+ 
 </body>
 </html>
 
