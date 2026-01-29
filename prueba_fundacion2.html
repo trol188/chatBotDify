@@ -381,23 +381,67 @@
     })();
 </script>
 
+ 
+</body>
 
- <script>
-  (function waitForGenesys() {
-    if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
+ <style>
+  /* Intento “rápido” por CSS (evita el flash inicial en muchos casos) */
+  .cx-widget, .cx-bubble, .cx-button, .genesys-launcher,
+  [class*="cx-"][class*="launcher"], [class*="launcher"],
+  [data-testid*="launcher"], [aria-label*="launcher" i]{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>
  
-    // Algunos tenants exponen eventos de error; si no existe, no pasa nada.
-    try {
-      window.Genesys("subscribe", "Messenger.error", (e) => {
-        console.error("Messenger.error:", e);
-      });
-    } catch (_) {}
+<script>
+  // Oculta el launcher nativo aunque Genesys lo inserte después (y aunque use shadow DOM)
+  (function hideGenesysLauncherForever(){
+    const SELECTORS = [
+      ".genesys-launcher",
+      ".cx-widget",
+      ".cx-bubble",
+      ".cx-button",
+      "[class*='cx-'][class*='launcher']",
+      "[class*='launcher']",
+      "[data-testid*='launcher']",
+      "[aria-label*='launcher' i]",
+      "[aria-label*='messenger' i]"
+    ];
  
+    function hideInRoot(root){
+      try {
+        SELECTORS.forEach(sel => {
+          root.querySelectorAll(sel).forEach(el => {
+            el.style.setProperty("display","none","important");
+            el.style.setProperty("visibility","hidden","important");
+            el.style.setProperty("opacity","0","important");
+            el.style.setProperty("pointer-events","none","important");
+          });
+        });
+ 
+        // Recorre shadow roots si existen
+        root.querySelectorAll("*").forEach(el => {
+          if (el.shadowRoot) hideInRoot(el.shadowRoot);
+        });
+      } catch (_) {}
+    }
+ 
+    // Observa cambios del DOM
+    const obs = new MutationObserver(() => hideInRoot(document));
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+ 
+    // Corre varias veces por si carga tarde
+    hideInRoot(document);
+    setTimeout(() => hideInRoot(document), 500);
+    setTimeout(() => hideInRoot(document), 1500);
+    setTimeout(() => hideInRoot(document), 3000);
   })();
 </script>
 
  
-</body>
 </html>
 
  
