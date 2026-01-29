@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Prueba - Botón flotante tipo Genesys</title>
+<title>Genesys Web Messenger – Launcher Custom</title>
  
   <style>
-    body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 24px; }
-    .card { max-width: 820px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
-    .muted { color: #6b7280; }
+    /* ====== CONTENIDO DEMO (puedes borrar esto en tu sitio) ====== */
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; min-height: 100vh; background:#fff; }
+    .demo { padding: 24px; color:#111827; }
  
-    /* ===== Contenedor flotante ===== */
-    .gc-widget {
+    /* ====== WIDGET ====== */
+    .gc-widget{
       position: fixed;
       right: 22px;
       bottom: 22px;
@@ -19,145 +19,228 @@
       display: flex;
       align-items: flex-end;
       gap: 14px;
+      user-select: none;
     }
  
-    /* ===== Burbuja (speech bubble) ===== */
-    .gc-bubble {
+    /* ====== BURBUJA similar a referencia ====== */
+    .gc-bubble{
       position: relative;
       display: flex;
       align-items: center;
       gap: 12px;
  
-      max-width: 360px;
-      padding: 14px 16px 14px 14px;
-      border-radius: 26px;
-      background: #9a8f87;
+      padding: 14px 18px 14px 14px;
+      border-radius: 999px;              /* bien redonda */
+      background: #8f847c;               /* tostado/gris */
       color: #fff;
  
-      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,.18);
+      max-width: 360px;
     }
  
+    /* cola */
     .gc-bubble::after{
       content:"";
       position:absolute;
       right: 34px;
       bottom: -10px;
+ 
       width: 0; height: 0;
       border-left: 12px solid transparent;
       border-right: 12px solid transparent;
-      border-top: 12px solid #9a8f87;
+      border-top: 12px solid #8f847c;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
     }
  
-    .gc-avatar {
-      width: 56px;
-      height: 56px;
+    /* avatar con borde blanco como referencia */
+    .gc-avatar{
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
+      overflow: hidden;
+      flex: 0 0 auto;
       background: #fff;
+      box-shadow: 0 0 0 6px rgba(255,255,255,.35);
       display: grid;
       place-items: center;
-      flex: 0 0 auto;
-      overflow: hidden;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.6);
+    }
+    .gc-avatar img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
  
-    .gc-avatar svg { width: 42px; height: 42px; opacity: .75; }
+    .gc-bubble__text{ line-height: 1.05; }
+    .gc-bubble__title{
+      font-weight: 800;
+      font-size: 18px;
+      margin-bottom: 4px;
+      letter-spacing: .2px;
+    }
+    .gc-bubble__subtitle{
+      font-weight: 600;
+      font-size: 14px;
+      opacity: .95;
+    }
  
-    .gc-bubble__text { line-height: 1.1; }
-    .gc-bubble__title { font-weight: 800; font-size: 18px; margin-bottom: 4px; }
-    .gc-bubble__subtitle { font-weight: 600; font-size: 14px; opacity: .95; }
- 
-    .gc-bubble__close {
+    /* X arriba a la derecha */
+    .gc-bubble__close{
       position: absolute;
       top: -10px;
       right: -10px;
- 
       width: 28px;
       height: 28px;
-      border: 0;
-      border-radius: 999px;
-      background: #3b3b3b;
-      color: #fff;
-      cursor: pointer;
- 
-      display: grid;
-      place-items: center;
-      box-shadow: 0 10px 18px rgba(0,0,0,.18);
-    }
-    .gc-bubble__close:active { transform: translateY(1px); }
- 
-    /* ===== Botón circular (launcher custom) ===== */
-    .gc-fab {
-      width: 66px;
-      height: 66px;
       border-radius: 50%;
       border: 0;
       cursor: pointer;
+      background: #2f2f2f;
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(0,0,0,.22);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .gc-bubble__close:active{ transform: translateY(1px); }
  
+    /* ====== BOTÓN NARANJA similar a referencia ====== */
+    .gc-fab{
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 0;
+      cursor: pointer;
       background: #ff6a00;
-      box-shadow: 0 14px 34px rgba(0,0,0,.22);
+      box-shadow: 0 16px 36px rgba(0,0,0,.24);
       display: grid;
       place-items: center;
       position: relative;
       transition: transform .12s ease, opacity .12s ease;
     }
-    .gc-fab:hover { transform: translateY(-1px); }
-    .gc-fab:active { transform: translateY(0px); opacity: .92; }
+    .gc-fab:hover{ transform: translateY(-1px); }
+    .gc-fab:active{ transform: translateY(0px); opacity: .92; }
+    .gc-fab[disabled]{ opacity: .6; cursor: not-allowed; transform:none; }
  
-    .gc-fab[disabled] { cursor: not-allowed; opacity: .65; transform: none; }
-    .gc-fab svg { width: 34px; height: 34px; }
- 
-    .gc-fab .gc-spark {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      width: 10px;
-      height: 10px;
+    /* puntito blanco en esquina (como “brillo”) */
+    .gc-fab::after{
+      content:"";
+      position:absolute;
+      right: 12px;
+      top: 12px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: rgba(255,255,255,.9);
-      box-shadow: 0 0 0 6px rgba(255,255,255,.18);
+      box-shadow: 0 0 0 8px rgba(255,255,255,.18);
     }
  
-    .is-hidden { display: none !important; }
+    .gc-fab svg{ width: 36px; height: 36px; }
  
+    .is-hidden{ display:none !important; }
+ 
+    /* mobile: esconder burbuja para no tapar */
     @media (max-width: 520px){
-      .gc-bubble { display: none; }
-      .gc-widget { right: 16px; bottom: 16px; }
+      .gc-bubble{ display:none; }
+      .gc-widget{ right: 16px; bottom: 16px; }
     }
  
-    /* ✅ SOLO ocultar el LAUNCHER NATIVO (no el chat ni sus botones) */
-    /* IMPORTANTE: NO ocultar .cx-bubble ni .cx-button porque rompe minimizar/cerrar */
+    /* ✅ Ocultar SOLO el launcher nativo de Genesys (no tocar chat UI) */
     .genesys-launcher,
     .cx-launcher,
-    [class*="launcher"] {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
+    [class*="launcher"]{
+      display:none !important;
+      visibility:hidden !important;
+      opacity:0 !important;
+      pointer-events:none !important;
     }
 </style>
+ 
+  <!-- ====== SNIPPET GENESYS (TU DEPLOYMENT) ====== -->
+<script type="text/javascript" charset="utf-8">
+    (function (g, e, n, es, ys) {
+      g['_genesysJs'] = e;
+      g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments) };
+      g[e].t = 1 * new Date();
+      g[e].c = es;
+      ys = document.createElement('script');
+      ys.async = 1;
+      ys.src = n;
+      ys.charset = 'utf-8';
+      document.head.appendChild(ys);
+    })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+      environment: 'prod',
+      deploymentId: '6a495972-d918-438f-a630-8dd1bb9fa6a3'
+    });
+</script>
+ 
+  <!-- ====== LÓGICA (toggle abrir/cerrar) ====== -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fab = document.getElementById("gcFab");
+      const bubble = document.getElementById("gcBubble");
+      const bubbleClose = document.getElementById("gcBubbleClose");
+ 
+      let messengerIsOpen = false;
+ 
+      function safeGenesys(cmd){
+        if (typeof window.Genesys === "function") window.Genesys("command", cmd);
+      }
+ 
+      // Cerrar solo burbuja
+      bubbleClose?.addEventListener("click", () => bubble.classList.add("is-hidden"));
+ 
+      // Toggle abrir/cerrar chat desde el botón custom
+      fab?.addEventListener("click", () => {
+        if (!messengerIsOpen) {
+          safeGenesys("Messenger.open");
+          bubble.classList.add("is-hidden");
+        } else {
+          safeGenesys("Messenger.close");
+        }
+      });
+ 
+      // Esperar Genesys y eventos para estado real
+      (function waitForGenesys(){
+        if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
+ 
+        window.Genesys("subscribe", "Messenger.ready", () => { fab.disabled = false; });
+        window.Genesys("subscribe", "Messenger.opened", () => { messengerIsOpen = true; });
+        window.Genesys("subscribe", "Messenger.closed", () => { messengerIsOpen = false; });
+      })();
+ 
+      // Refuerzo: ocultar launcher nativo aunque aparezca tarde (sin tocar chat UI)
+      (function hideLauncherOnly(){
+        const SELECTORS = [".genesys-launcher", ".cx-launcher", "[class*='launcher']"];
+        function hide(root){
+          try{
+            SELECTORS.forEach(sel => root.querySelectorAll(sel).forEach(el => {
+              el.style.setProperty("display","none","important");
+              el.style.setProperty("visibility","hidden","important");
+              el.style.setProperty("opacity","0","important");
+              el.style.setProperty("pointer-events","none","important");
+            }));
+            root.querySelectorAll("*").forEach(el => { if (el.shadowRoot) hide(el.shadowRoot); });
+          } catch(_) {}
+        }
+        const obs = new MutationObserver(() => hide(document));
+        obs.observe(document.documentElement, { childList:true, subtree:true });
+        hide(document);
+      })();
+    });
+</script>
 </head>
  
 <body>
-<div class="card">
-<h1>Web de prueba</h1>
-<p class="muted">
-      Botón flotante custom + burbuja tipo “¿Necesita ayuda?”.
-      (Launcher nativo oculto, chat sigue con UI completa para minimizar/cerrar)
-</p>
-</div>
+<div class="demo">Demo page (puedes borrar esto). Abajo a la derecha: widget custom.</div>
  
-  <!-- Widget flotante -->
-<div class="gc-widget" aria-live="polite">
-<!-- Burbuja -->
+  <div class="gc-widget" aria-live="polite">
 <div id="gcBubble" class="gc-bubble">
-<button id="gcBubbleClose" class="gc-bubble__close" type="button" aria-label="Cerrar mensaje">✕</button>
+<button id="gcBubbleClose" class="gc-bubble__close" type="button" aria-label="Cerrar">×</button>
  
       <div class="gc-avatar" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none">
-<path d="M12 12c2.76 0 5-2.46 5-5.5S14.76 1 12 1 7 3.46 7 6.5 9.24 12 12 12Z" fill="#9ca3af"/>
-<path d="M3 23c0-5 4-9 9-9s9 4 9 9" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
-</svg>
+<!-- Cambia la URL por tu imagen real -->
+<img src="AVATAR_URL_AQUI" alt="">
 </div>
  
       <div class="gc-bubble__text">
@@ -166,9 +249,8 @@
 </div>
 </div>
  
-    <!-- Botón circular -->
-<button id="gcFab" class="gc-fab" type="button" disabled aria-label="Abrir chat">
-<span class="gc-spark" aria-hidden="true"></span>
+    <button id="gcFab" class="gc-fab" type="button" disabled aria-label="Abrir/Cerrar chat">
+<!-- ícono chat -->
 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
 <path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z" fill="white" opacity="0.95"/>
 <circle cx="10" cy="10" r="1.2" fill="#ff6a00"/>
@@ -177,99 +259,5 @@
 </svg>
 </button>
 </div>
- 
-  <!-- ✅ TU SNIPPET -->
-<script type="text/javascript" charset="utf-8">
-    (function (g, e, n, es, ys) {
-      g['_genesysJs'] = e;
-      g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments) };
-      g[e].t = 1 * new Date();
-      g[e].c = es;
-      ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8';
-      document.head.appendChild(ys);
-    })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
-      environment: 'prod',
-      deploymentId: '6a495972-d918-438f-a630-8dd1bb9fa6a3'
-    });
-</script>
- 
-  <script>
-    const fab = document.getElementById("gcFab");
-    const bubble = document.getElementById("gcBubble");
-    const bubbleClose = document.getElementById("gcBubbleClose");
- 
-    let messengerIsOpen = false;
- 
-    bubbleClose.addEventListener("click", () => {
-      bubble.classList.add("is-hidden");
-    });
- 
-    function safeGenesys(cmd, payload){
-      if (typeof window.Genesys !== "function") return;
-      window.Genesys("command", cmd, payload);
-    }
- 
-    // Toggle abrir/cerrar desde TU botón
-    fab.addEventListener("click", () => {
-      if (!messengerIsOpen) {
-        safeGenesys("Messenger.open");
-        bubble.classList.add("is-hidden");
-      } else {
-        safeGenesys("Messenger.close");
-        // bubble.classList.remove("is-hidden"); // si quieres que vuelva al cerrar
-      }
-    });
- 
-    // Suscripción eventos reales del Messenger
-    (function waitForGenesys(){
-      if (typeof window.Genesys !== "function") return setTimeout(waitForGenesys, 100);
- 
-      window.Genesys("subscribe", "Messenger.ready", () => {
-        fab.disabled = false;
-      });
- 
-      window.Genesys("subscribe", "Messenger.opened", () => {
-        messengerIsOpen = true;
-      });
- 
-      window.Genesys("subscribe", "Messenger.closed", () => {
-        messengerIsOpen = false;
-      });
-    })();
- 
-    /* ✅ Refuerzo: ocultar SOLO launcher nativo aunque aparezca tarde (sin tocar chat UI) */
-    (function hideLauncherOnly(){
-      const LAUNCHER_SELECTORS = [
-        ".genesys-launcher",
-        ".cx-launcher",
-        "[class*='launcher']"
-      ];
- 
-      function hide(root){
-        try{
-          LAUNCHER_SELECTORS.forEach(sel => {
-            root.querySelectorAll(sel).forEach(el => {
-              el.style.setProperty("display","none","important");
-              el.style.setProperty("visibility","hidden","important");
-              el.style.setProperty("opacity","0","important");
-              el.style.setProperty("pointer-events","none","important");
-            });
-          });
- 
-          root.querySelectorAll("*").forEach(el => {
-            if (el.shadowRoot) hide(el.shadowRoot);
-          });
-        } catch(_) {}
-      }
- 
-      const obs = new MutationObserver(() => hide(document));
-      obs.observe(document.documentElement, { childList: true, subtree: true });
- 
-      hide(document);
-      setTimeout(() => hide(document), 500);
-      setTimeout(() => hide(document), 1500);
-      setTimeout(() => hide(document), 3000);
-    })();
-</script>
 </body>
 </html>
