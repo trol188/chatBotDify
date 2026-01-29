@@ -11,16 +11,16 @@
     .demo { padding: 24px; color:#111827; }
  
     /* ====== WIDGET ====== */
-    .gc-widget{
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      z-index: 999999;
-      display: flex;
-      align-items: flex-end;
-      gap: 14px;
-      user-select: none;
-    }
+.gc-widget{
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;     /* 👈 CLAVE */
+  align-items: flex-end;      /* alinea burbuja con el botón */
+  gap: 10px;                  /* espacio vertical */
+}
  
     /* ====== BURBUJA similar a referencia ====== */
     .gc-bubble{
