@@ -1,65 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Webchat Genesys Personalizado</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prueba - Genesys Web Messenger (Botón flotante custom)</title>
+ 
   <style>
-    /* Tema global oscuro */
-    body { background: #f4f4f4; font-family: 'Segoe UI', sans-serif; }
-    
-    /* Launcher custom (sobrescribe Genesys) */
-    .gwc-launcher { 
-      bottom: 30px !important; right: 30px !important; 
-      background: linear-gradient(135deg, #007BFF, #0056b3) !important;
-      border-radius: 50px !important; width: 70px !important; height: 70px !important;
-      box-shadow: 0 4px 20px rgba(0,123,255,0.3) !important;
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 24px; }
+    .card { max-width: 780px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
+    .muted { color: #6b7280; }
+ 
+    /* Botón flotante custom */
+    .gc-fab {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 999999;
+ 
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+ 
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 16px;
+      cursor: pointer;
+ 
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      background: #111827;
+      color: #fff;
+ 
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform .12s ease, opacity .12s ease;
     }
-    
-    /* Header chat: tu logo y color */
-    .gwc-chat-header { 
-      background: #007BFF !important; color: white !important;
-      font-size: 16px; padding: 15px; border-radius: 10px 10px 0 0;
+    .gc-fab:hover { transform: translateY(-1px); }
+    .gc-fab:active { transform: translateY(0px); opacity: .92; }
+ 
+    .gc-fab__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.25);
     }
-    
-    /* Mensajes usuario (derecha, azul) */
-    .gwc-chat-message-container.gwc-chat-message-container-outbound {
-      background: #007BFF !important; color: white !important; border-radius: 20px 20px 5px 20px;
-      margin-left: 40%; font-family: Arial;
-    }
-    
-    /* Mensajes bot/agente (izquierda, gris) */
-    .gwc-chat-message-container.gwc-chat-message-container-inbound {
-      background: #e9ecef !important; color: #333 !important; border-radius: 20px 20px 20px 5px;
-      margin-right: 40%; font-family: 'Georgia', serif;
-    }
-    
-    /* Input mensajes */
-    .gwc-chat-message-form textarea { border: 2px solid #007BFF !important; border-radius: 25px; padding: 12px; }
-    
-    /* Botón enviar */
-    .gwc-chat-message-form button { background: #007BFF !important; border-radius: 50%; }
-  </style>
-
-  <script type="text/javascript" charset="utf-8">
-    (function (g, e, n, es, ys) {
-      g['_genesysJs'] = e; g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
-      g[e].t = 1 * new Date(); g[e].c = es;
-      ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8';
-      document.head.appendChild(ys);
-    })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
-      environment: 'prod', deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17',
-      theme: 'dark'  // Tema base (light/dark)
-    });
-
-    Genesys("subscribe", "Database.ready", function () {
-      Genesys("command", "Database.set", {
-        messaging: { customAttributes: { nombreCompleto: "Antonio", rut: "10.777.888-K", correo: "ssanchez@sercomed.cl" } }
-      });
-    });
-  </script>
+ 
+    .gc-fab[disabled] { cursor: not-allowed; opacity: .65; transform: none; }
+</style>
 </head>
+ 
 <body>
-  <h1>Tu página con Webchat personalizado</h1>
-  <p>¡Haz clic en el launcher azul abajo-derecha para abrir!</p>
+<div class="card">
+<h1>Web de prueba</h1>
+<p class="muted">
+      Este ejemplo usa un botón flotante personalizado para abrir Genesys Cloud Web Messenger.
+      Si ves dos botones (el tuyo y el de Genesys), oculta el launcher nativo desde la configuración del Messenger.
+</p>
+</div>
+ 
+  <!-- Botón flotante custom -->
+<button id="gcFab" class="gc-fab" type="button" disabled>
+<span class="gc-fab__dot" aria-hidden="true"></span>
+<span id="gcFabLabel">Cargando chat…</span>
+</button>
+ 
+  <!-- ✅ TU SNIPPET (tal cual) -->
+<script type="text/javascript" charset="utf-8">
+    (function (g, e, n, es, ys) {
+      g['_genesysJs'] = e;
+      g[e] = g[e] || function () {
+        (g[e].q = g[e].q || []).push(arguments)
+      };
+      g[e].t = 1 * new Date();
+      g[e].c = es;
+      ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+    })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+      environment: 'prod',
+      deploymentId: '77733d04-a374-41ec-8e30-311632bc0a17'
+    });
+</script>
+ 
+  <!-- Lógica para habilitar el botón cuando el Messenger esté listo y abrirlo -->
+<script>
+    const fab = document.getElementById("gcFab");
+    const label = document.getElementById("gcFabLabel");
+ 
+    function setFabState(enabled, text) {
+      fab.disabled = !enabled;
+      label.textContent = text;
+    }
+ 
+    // Click -> abre el Messenger
+    fab.addEventListener("click", () => {
+      if (typeof window.Genesys !== "function") return;
+      window.Genesys("command", "Messenger.open");
+    });
+ 
+    // Espera al SDK
+    (function initWhenGenesysLoads() {
+      if (typeof window.Genesys !== "function") {
+        setFabState(false, "Cargando chat…");
+        return setTimeout(initWhenGenesysLoads, 100);
+      }
+ 
+      // Cuando el Messenger esté listo, habilita tu botón
+      window.Genesys("subscribe", "Messenger.ready", () => {
+        setFabState(true, "¿Necesitas ayuda? Chatea");
+      });
+ 
+      // (Opcional) Si quieres cambiar texto cuando se abre/cierra
+      window.Genesys("subscribe", "Messenger.opened", () => {
+        setFabState(true, "Chat abierto");
+      });
+      window.Genesys("subscribe", "Messenger.closed", () => {
+        setFabState(true, "Abrir chat");
+      });
+ 
+      // Fallback: por si el evento ready no dispara (bloqueos/cookies/etc.)
+      setTimeout(() => {
+        if (fab.disabled) setFabState(true, "Abrir chat");
+      }, 6000);
+    })();
+</script>
 </body>
 </html>
