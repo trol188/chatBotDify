@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -50,8 +50,21 @@
         .gc-title{font-weight:800;font-size:18px;line-height:1.1}
         .gc-sub{font-weight:600;font-size:14px;opacity:.95;line-height:1.2;margin-top:2px}
         .gc-close{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#2f2f2f;color:#fff;cursor:pointer}
-        .gc-fab{width:72px;height:72px;border-radius:50%;border:0;background:#ff6a00;cursor:pointer;box-shadow:0 16px 36px rgba(0,0,0,.24);display:grid;place-items:center}
-        .gc-fab svg{width:36px;height:36px}
+
+        /* ✅ BOTÓN ACTUALIZADO (similar al adjunto) */
+        .gc-fab{
+          width:56px;
+          height:56px;
+          border-radius:50%;
+          border:0;
+          background:#ff6a00;
+          cursor:pointer;
+          box-shadow:0 10px 22px rgba(0,0,0,.20);
+          display:grid;
+          place-items:center;
+        }
+        .gc-fab svg{width:26px;height:26px}
+
         .gc-hidden{display:none!important}
         /* Oculta launcher nativo (si aparece) */
         .genesys-launcher,.cx-launcher,[class*="launcher"]{display:none!important}
@@ -74,9 +87,11 @@
             </div>
           </div>
 
+          <!-- ✅ SVG ACTUALIZADO (burbuja negra similar al adjunto) -->
           <button class="gc-fab" id="gcFab" type="button" aria-label="Abrir chat">
-            <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
-              <path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z"/>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#111111" d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2Z"/>
+              <path fill="#ff6a00" d="M7 8h10v2H7zM7 12h7v2H7z"/>
             </svg>
           </button>
         </div>
@@ -92,7 +107,6 @@
       bubbleClose?.addEventListener("click", () => bubble?.classList.add("gc-hidden"));
 
       fab?.addEventListener("click", () => {
-        // OJO: Genesys queda disponible como "stub" igual, así que NO bloqueamos por !window.Genesys
         if (!isOpen) {
           window.Genesys && window.Genesys("command", "Messenger.open");
           bubble?.classList.add("gc-hidden");
@@ -118,23 +132,22 @@
       });
 
       // ================== SETEO DE PARÁMETROS DEMO ==================
-(function setCustomAttributesWhenReady(){
-  if (typeof window.Genesys !== "function") {
-    return setTimeout(setCustomAttributesWhenReady, 100);
-  }
+      (function setCustomAttributesWhenReady(){
+        if (typeof window.Genesys !== "function") {
+          return setTimeout(setCustomAttributesWhenReady, 100);
+        }
 
-  Genesys("command", "Database.set", {
-    messaging: {
-      customAttributes: {
-        nombreCompleto: document.getElementById("nombreCompleto")?.textContent.trim(), // dinámico
-        rut: "10777888-K",
-        correo: "ssanchez@sercomed.cl"
-      }
-    }
-  });
-})();
+        Genesys("command", "Database.set", {
+          messaging: {
+            customAttributes: {
+              nombreCompleto: document.getElementById("nombreCompleto")?.textContent.trim(), // dinámico
+              rut: "10777888-K",
+              correo: "ssanchez@sercomed.cl"
+            }
+          }
+        });
+      })();
 
-      
       // Suscripciones (cuando Genesys ya esté cargado)
       (function waitGenesys(){
         if (!window.Genesys) return setTimeout(waitGenesys, 100);
