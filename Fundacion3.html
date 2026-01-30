@@ -126,7 +126,7 @@
   Genesys("command", "Database.set", {
     messaging: {
       customAttributes: {
-        nombreCompleto: document.body.textContent.trim(), // dinámico
+        nombreCompleto: document.getElementById("nombreCompleto")?.textContent.trim(), // dinámico
         rut: "10777888-K",
         correo: "ssanchez@sercomed.cl"
       }
@@ -148,6 +148,6 @@
 </head>
 
 <body>
-  Marcos
+  <span id="nombreCompleto">Marcos</span>
 </body>
 </html>
