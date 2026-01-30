@@ -88,12 +88,20 @@
           </div>
 
           <!-- ✅ SVG ACTUALIZADO (burbuja negra similar al adjunto) -->
-          <button class="gc-fab" id="gcFab" type="button" aria-label="Abrir chat">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#111111" d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2Z"/>
-              <path fill="#ff6a00" d="M7 8h10v2H7zM7 12h7v2H7z"/>
-            </svg>
-          </button>
+<button class="gc-fab" id="gcFab" type="button" aria-label="Abrir chat">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <!-- Globo -->
+    <path
+      d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z"
+      fill="white"
+    />
+    <!-- Líneas de texto -->
+    <rect x="8" y="8" width="8" height="1.6" rx="0.8" fill="#111"/>
+    <rect x="8" y="11" width="6.5" height="1.6" rx="0.8" fill="#111"/>
+    <rect x="8" y="14" width="5" height="1.6" rx="0.8" fill="#111"/>
+  </svg>
+</button>
+
         </div>
       `;
       document.body.appendChild(root);
