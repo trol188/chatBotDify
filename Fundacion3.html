@@ -11,22 +11,15 @@
     data-avatar-url="https://img.icons8.com/external-outline-lafs/64/external-ic_support-menu-outline-lafs.png"
   >
   (function () {
-    // ================= CONFIG DESDE ATRIBUTOS =================
+    // ================= CONFIG =================
     const scriptTag = document.currentScript;
 
-    const DEPLOYMENT_ID = scriptTag?.dataset?.deploymentId || "6a495972-d918-438f-a630-8dd1bb9fa6a3";
-    const ENVIRONMENT   = scriptTag?.dataset?.environment  || "prod";
-    const AVATAR_URL    = scriptTag?.dataset?.avatarUrl    || "https://img.icons8.com/external-outline-lafs/64/external-ic_support-menu-outline-lafs.png";
+    const DEPLOYMENT_ID = scriptTag.dataset.deploymentId;
+    const ENVIRONMENT   = scriptTag.dataset.environment || "prod";
+    const AVATAR_URL    = scriptTag.dataset.avatarUrl || "";
 
-    if (!DEPLOYMENT_ID) {
-      console.error("[Genesys Widget] deploymentId requerido");
-      return;
-    }
-
-    // Evita duplicación si el script se ejecuta más de una vez
     const WIDGET_ROOT_ID = "gcWidgetRoot";
 
-    // ================== INIT DOM SAFE ==================
     function onReady(fn) {
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", fn, { once: true });
@@ -35,116 +28,106 @@
       }
     }
 
-    onReady(function initWidget() {
-      // Si ya existe, no lo vuelvas a crear
-      if (document.getElementById(WIDGET_ROOT_ID)) return;
-
-      // ================== CSS ==================
-      const style = document.createElement("style");
-      style.innerHTML = `
-        .gc-widget{position:fixed;right:22px;bottom:22px;z-index:999999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font-family:system-ui,Arial,sans-serif}
-        .gc-bubble{position:relative;display:flex;align-items:center;gap:12px;padding:14px 18px 14px 14px;border-radius:999px;background:#8f847c;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.18);max-width:360px}
-        .gc-bubble::after{content:"";position:absolute;right:22px;bottom:-10px;border-left:12px solid transparent;border-right:12px solid transparent;border-top:12px solid #8f847c}
-        .gc-avatar{width:54px;height:54px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.35);flex:0 0 auto}
-        .gc-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-        .gc-title{font-weight:800;font-size:18px;line-height:1.1}
-        .gc-sub{font-weight:600;font-size:14px;opacity:.95;line-height:1.2;margin-top:2px}
-        .gc-close{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#2f2f2f;color:#fff;cursor:pointer}
-        .gc-fab{width:72px;height:72px;border-radius:50%;border:0;background:#ff6a00;cursor:pointer;box-shadow:0 16px 36px rgba(0,0,0,.24);display:grid;place-items:center}
-        .gc-fab svg{width:36px;height:36px}
-        .gc-hidden{display:none!important}
-        /* Oculta launcher nativo (si aparece) */
-        .genesys-launcher,.cx-launcher,[class*="launcher"]{display:none!important}
-      `;
-      document.head.appendChild(style);
-
-      // ================== HTML ==================
-      const root = document.createElement("div");
-      root.id = WIDGET_ROOT_ID;
-      root.innerHTML = `
-        <div class="gc-widget">
-          <div class="gc-bubble" id="gcBubble">
-            <button class="gc-close" id="gcBubbleClose" type="button" aria-label="Cerrar">×</button>
-            <div class="gc-avatar">
-              ${AVATAR_URL ? `<img src="${AVATAR_URL}" alt="Soporte">` : ""}
-            </div>
-            <div>
-              <div class="gc-title">¿Necesita ayuda?</div>
-              <div class="gc-sub">Nuestros ejecutivos están listos para ayudar</div>
-            </div>
-          </div>
-
-          <button class="gc-fab" id="gcFab" type="button" aria-label="Abrir chat">
-            <svg viewBox="0 0 24 24" fill="white" aria-hidden="true">
-              <path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z"/>
-            </svg>
-          </button>
-        </div>
-      `;
-      document.body.appendChild(root);
-
-      const fab = document.getElementById("gcFab");
-      const bubble = document.getElementById("gcBubble");
-      const bubbleClose = document.getElementById("gcBubbleClose");
-
-      let isOpen = false;
-
-      bubbleClose?.addEventListener("click", () => bubble?.classList.add("gc-hidden"));
-
-      fab?.addEventListener("click", () => {
-        // OJO: Genesys queda disponible como "stub" igual, así que NO bloqueamos por !window.Genesys
-        if (!isOpen) {
-          window.Genesys && window.Genesys("command", "Messenger.open");
-          bubble?.classList.add("gc-hidden");
-        } else {
-          window.Genesys && window.Genesys("command", "Messenger.close");
+    function waitBody(cb) {
+      if (document.body) return cb();
+      const i = setInterval(() => {
+        if (document.body) {
+          clearInterval(i);
+          cb();
         }
-      });
+      }, 50);
+    }
 
-      // ================== GENESYS BOOTSTRAP ==================
-      (function (g, e, n, es, ys) {
-        g["_genesysJs"] = e;
-        g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
-        g[e].t = 1 * new Date();
-        g[e].c = es;
-
-        ys = document.createElement("script");
-        ys.async = 1;
-        ys.src = n;
-        document.head.appendChild(ys);
-      })(window, "Genesys", "https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js", {
-        environment: ENVIRONMENT,
-        deploymentId: DEPLOYMENT_ID
-      });
-
-        document.addEventListener("DOMContentLoaded", function () {
-          // AQUI DEBEN COMPLETARSE LAS VARIABLES QUE CONTIENEN EN NOMBRE, RUT(sin puntos) y EMAIL DEL CLIENTE
-    const demoDiv = document.querySelector('.demo');
-    const varNombre = demoDiv.textContent;
-    Genesys("command", "Database.set", {
-      messaging: {
-        customAttributes: {
-          nombreCompleto: varNombre,
-          rut: "10777888-K",
-          correo: "ssanchez@sercomed.cl"
-        }
-      }
-    });
-  });
-      
-      // Suscripciones (cuando Genesys ya esté cargado)
-      (function waitGenesys(){
-        if (!window.Genesys) return setTimeout(waitGenesys, 100);
-
-        window.Genesys("subscribe", "Messenger.opened", () => { isOpen = true; });
-        window.Genesys("subscribe", "Messenger.closed", () => { isOpen = false; });
+    function waitGenesys(cb) {
+      (function t() {
+        if (window.Genesys) return cb();
+        setTimeout(t, 100);
       })();
+    }
+
+    onReady(() => {
+      waitBody(() => {
+        if (document.getElementById(WIDGET_ROOT_ID)) return;
+
+        // ================= CSS =================
+        const style = document.createElement("style");
+        style.textContent = `
+          .gc-widget{position:fixed;right:22px;bottom:22px;z-index:999999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font-family:system-ui,Arial,sans-serif}
+          .gc-bubble{position:relative;display:flex;align-items:center;gap:12px;padding:14px 18px 14px 14px;border-radius:999px;background:#8f847c;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.18)}
+          .gc-bubble::after{content:"";position:absolute;right:22px;bottom:-10px;border-left:12px solid transparent;border-right:12px solid transparent;border-top:12px solid #8f847c}
+          .gc-avatar{width:54px;height:54px;border-radius:50%;overflow:hidden;background:#fff}
+          .gc-avatar img{width:100%;height:100%;object-fit:cover}
+          .gc-title{font-weight:800;font-size:18px}
+          .gc-sub{font-weight:600;font-size:14px}
+          .gc-close{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#2f2f2f;color:#fff;cursor:pointer}
+          .gc-fab{width:72px;height:72px;border-radius:50%;border:0;background:#ff6a00;cursor:pointer;display:grid;place-items:center}
+          .gc-hidden{display:none!important}
+          .genesys-launcher,.cx-launcher{display:none!important}
+        `;
+        document.head.appendChild(style);
+
+        // ================= HTML =================
+        const root = document.createElement("div");
+        root.id = WIDGET_ROOT_ID;
+        root.innerHTML = `
+          <div class="gc-widget">
+            <div class="gc-bubble" id="gcBubble">
+              <button class="gc-close" id="gcBubbleClose">×</button>
+              <div class="gc-avatar">
+                ${AVATAR_URL ? `<img src="${AVATAR_URL}" alt="Soporte">` : ""}
+              </div>
+              <div>
+                <div class="gc-title">¿Necesita ayuda?</div>
+                <div class="gc-sub">Nuestros ejecutivos están listos</div>
+              </div>
+            </div>
+
+            <button class="gc-fab" id="gcFab">
+              <svg viewBox="0 0 24 24" fill="white">
+                <path d="M20 14c0 1.1-.9 2-2 2H9l-4 4V6c0-1.1.9-2 2-2h11c1.1 0 2 .9 2 2v8Z"/>
+              </svg>
+            </button>
+          </div>
+        `;
+        document.body.appendChild(root);
+
+        // ================= GENESYS =================
+        (function (g, e, n, es, ys) {
+          g["_genesysJs"] = e;
+          g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
+          g[e].t = Date.now();
+          g[e].c = es;
+
+          ys = document.createElement("script");
+          ys.async = true;
+          ys.src = n;
+          document.head.appendChild(ys);
+        })(window, "Genesys", "https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js", {
+          environment: ENVIRONMENT,
+          deploymentId: DEPLOYMENT_ID
+        });
+
+        // ================= DATA DINÁMICA =================
+        waitGenesys(() => {
+          const nombreCompleto = document.body.textContent.trim();
+
+          window.Genesys("command", "Database.set", {
+            messaging: {
+              customAttributes: {
+                nombreCompleto,
+                rut: "10777888-K",
+                correo: "ssanchez@sercomed.cl"
+              }
+            }
+          });
+        });
+      });
     });
   })();
   </script>
 </head>
 
 <body>
-  <div class="demo">Marco Antonio</div>
+  Marco Antonio
 </body>
 </html>
