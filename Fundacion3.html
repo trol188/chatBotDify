@@ -117,6 +117,21 @@
         deploymentId: DEPLOYMENT_ID
       });
 
+        document.addEventListener("DOMContentLoaded", function () {
+          // AQUI DEBEN COMPLETARSE LAS VARIABLES QUE CONTIENEN EN NOMBRE, RUT(sin puntos) y EMAIL DEL CLIENTE
+    const demoDiv = document.querySelector('.demo');
+    const varNombre = demoDiv.textContent;
+    Genesys("command", "Database.set", {
+      messaging: {
+        customAttributes: {
+          nombreCompleto: varNombre,
+          rut: "10777888-K",
+          correo: "ssanchez@sercomed.cl"
+        }
+      }
+    });
+  });
+      
       // Suscripciones (cuando Genesys ya esté cargado)
       (function waitGenesys(){
         if (!window.Genesys) return setTimeout(waitGenesys, 100);
@@ -130,6 +145,6 @@
 </head>
 
 <body>
-  <div class="demo">Demo</div>
+  <div class="demo">Marco Antonio</div>
 </body>
 </html>
