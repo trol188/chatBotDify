@@ -1,0 +1,52 @@
+
+
+<!--https://trol188.github.io/chatBotDify/prueba_fundacion.html-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+  
+<!-- ESTE ES EL SCRIPT PARA INTEGRAR EL WEBCHAT A LA PAGINA ( URL para probarlo : https://sercomed.github.io/webchat/Esencial2.html )
+   Contiene los campos nombreCompleto, rut y correo que deben ser llenados con los datos del cliente
+   A modo de ejemplo se esta llenando el campo "nombreCompleto" con un texto sacado de este mismo HTML
+-->
+
+
+<script type="text/javascript" charset="utf-8">
+  (function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+    g[e] = g[e] || function () { (g[e].q = g[e].q || []).push(arguments); };
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8';
+    document.head.appendChild(ys);
+  })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+    environment: 'prod',
+    deploymentId: 'f0ac3cb4-1552-4f1d-9caa-e70084cea95a'
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    Genesys("command", "Database.set", {
+      messaging: {
+        customAttributes: {
+          nombreCompleto: document.body.textContent.trim(),
+          rut: "10777888-K",
+          correo: "ssanchez@sercomed.cl"
+        }
+      }
+    });
+  });
+</script>
+
+
+  
+  <meta charset="UTF-8">
+  <title>Prueba Webchat Genesys Messenger</title>
+</head>
+
+
+<body>
+Marco Antonio
+</body>
+</html>
